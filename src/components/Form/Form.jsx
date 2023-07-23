@@ -1,8 +1,14 @@
+import { nanoid } from 'nanoid';
 import { Button, Input, InputTitle, StyledForm } from './Form.styled';
-import { PropTypes } from 'prop-types';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectContacts } from 'redux/selectors';
+import { addContact } from 'redux/slice';
 
-export const Form = ({ handleForm, contacts }) => {
+export const Form = () => {
+	const dispatch = useDispatch();
+	const contacts = useSelector(selectContacts);
+
 	const [name, setName] = useState('');
 	const [number, setNumber] = useState('');
 
@@ -26,7 +32,13 @@ export const Form = ({ handleForm, contacts }) => {
 			setName('');
 			setNumber('');
 		} else {
-			handleForm(name, number);
+			dispatch(
+				addContact({
+					id: nanoid(),
+					name,
+					number,
+				})
+			);
 			setName('');
 			setNumber('');
 		}
@@ -57,9 +69,4 @@ export const Form = ({ handleForm, contacts }) => {
 			<Button type="submit">Add contact</Button>
 		</StyledForm>
 	);
-};
-
-Form.propTypes = {
-	contacts: PropTypes.array.isRequired,
-	handleForm: PropTypes.func.isRequired,
 };
